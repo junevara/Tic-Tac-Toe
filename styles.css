@@ -1,0 +1,56 @@
+#gameboard {
+   
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr 1fr;
+ 
+    border: 3px solid black;
+    grid-gap: 3px;
+    background-color: black;
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    
+   
+    
+}
+
+.box > div {
+    position: relative;
+    bottom: 10px;
+    height: max-content;
+    width: max-content;
+    font-size: 100px;
+    
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    
+   
+}
+
+.playerinput {
+    display: flex;
+    align-items: center;
+
+}
+
+fieldset {
+    display: flex;
+    border: none;
+}
+
+input[type=text]{
+    height: 20px;
+    margin-left: 5px;
+}
+
+button[type=submit]{
+    margin-bottom: 10px;
+    
+}

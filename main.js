@@ -18,6 +18,11 @@ const getClickFields =(() => {
 
 })();
 
+const getRadioButtons = (() => {
+    const radioButtons = document.querySelectorAll('input[type = "radio"]');
+    return {radioButtons};
+})();
+
 
 
 const getStartPlayer = () => {
@@ -58,22 +63,18 @@ const getInput = () => {
     
     name1 = playerone.value;
     
-    
     name2 = playertwo.value;
     
-    
     symbol1 = document.querySelector('input[name="player1symb"]:checked').value;
-    
 
-    
-
-    
     symbol2 = document.querySelector('input[name="player2symb"]:checked').value;
         
     
     return {name1, name2, symbol1, symbol2};
 
 }
+
+
 
 const play = () => {
     const player1 = player(name1, symbol1);
@@ -117,7 +118,19 @@ const outer = (() => {
     return {handleEvent};
 })();
 
-
+const switchButtons = () => {
+    if (document.querySelector('input[name="player1symb"]:checked').value === 'x'){
+        
+        document.querySelector('input[id="player2symbx"]').checked = false;
+        document.querySelector('input[id="player2symbo"]').checked = true;
+        console.log('alert');
+    }
+    else {
+        document.querySelector('input[id="player2symbx"]').checked = true;
+        document.querySelector('input[id="player2symbo"]').checked = false;
+        console.log('alert2');
+    }
+};
 
 // const startPlayer = getStartPlayer();
 // console.log(startPlayer);   
@@ -126,6 +139,10 @@ getClickFields.fields.forEach((field) => {
     field.addEventListener('click', outer.handleEvent);
     
     })
+
+getRadioButtons.radioButtons.forEach((button) => {
+    button.addEventListener('change', switchButtons);
+})
 
 
 

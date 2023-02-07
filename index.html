@@ -9,7 +9,7 @@
 </head>
 <body>
     
-    <div class="options">
+    <div id="options">
         <form action="">
             <div class="playerinput">
                
@@ -18,7 +18,7 @@
                 <fieldset>
                     <legend>Chose Symbol</legend>
                     <div>
-                        <input type="radio" id="player1symbx" name="player1symb" value="x">
+                        <input type="radio" id="player1symbx" name="player1symb" value="x" checked>
                         <label for="player1symbx">x</label>
                     </div>
                     <div>
@@ -40,12 +40,12 @@
                         <label for="player2symbx">x</label>
                     </div>
                     <div>
-                        <input type="radio" id="player2symbo" name="player2symb" value="o">
+                        <input type="radio" id="player2symbo" name="player2symb" value="o" checked>
                         <label for="player2symbo">o</label>
                     </div>
                 </fieldset>
             </div>
-            <button type="submit">play</button>
+            <button type="submit" id="play">play</button>
         </form>
     </div>
     <div id="gameboard">

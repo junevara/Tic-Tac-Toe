@@ -11,6 +11,21 @@
     
     <div id="options">
         <form action="">
+            <div id="chooseMode">
+                
+                <fieldset>
+                    <legend>Choose Mode</legend>
+                    <div>
+                        <input type="radio" id="vsComputer" class="chooseMo" name="chooseMode"  value="vsComputer" checked>
+                        <label for="vsComputer">vs Computer</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="twoPlayer" class="chooseMo" name="chooseMode" value="twoPlayer">
+                        <label for="twoPlayer">2-Player-Game</label>
+                    </div>
+                </fieldset>
+            </div>
+            
             <div class="playerinput">
                
                 <label for="player1">Name Player 1</label>
@@ -18,29 +33,29 @@
                 <fieldset>
                     <legend>Chose Symbol</legend>
                     <div>
-                        <input type="radio" id="player1symbx" name="player1symb" value="x" checked>
+                        <input type="radio" id="player1symbx" class="chooseSymbol" name="player1symb" value="x" checked>
                         <label for="player1symbx">x</label>
                     </div>
                     <div>
-                        <input type="radio" id="player1symbo" name="player1symb" value="o">
+                        <input type="radio" id="player1symbo" class="chooseSymbol" name="player1symb" value="o">
                         <label for="player1symbo">o</label>
                     </div>
                 </fieldset>
                 
 
             </div>
-            <div class="playerinput">
+            <div class="playerinput" id="player2Input">
                 
                 <label for="player2">Name Player 2</label>
                 <input type="text" id="player2" name="player2">
                 <fieldset>
                     <legend>Chose Symbol</legend>
                     <div>
-                        <input type="radio" id="player2symbx" name="player2symb" value="x">
+                        <input type="radio" id="player2symbx" class="chooseSymbol" name="player2symb" value="x">
                         <label for="player2symbx">x</label>
                     </div>
                     <div>
-                        <input type="radio" id="player2symbo" name="player2symb" value="o" checked>
+                        <input type="radio" id="player2symbo" class="chooseSymbol" name="player2symb" value="o" checked>
                         <label for="player2symbo">o</label>
                     </div>
                 </fieldset>

@@ -111,12 +111,12 @@ const reset = () => {
 
 const showPlayAgain = (() => {
     const preparePlayAgainButton = () => {
-        const playAgainButoon = document.createElement('button');
-        playAgainButoon.setAttribute('id', 'playAgainButton');
-        playAgainButoon.innerHTML = 'replay';
+        const playAgainButon = document.createElement('button');
+        playAgainButon.setAttribute('id', 'playAgainButton');
+        playAgainButon.innerHTML = 'replay';
         const divToInsertAfter = document.getElementById('gameOverMessage');
-        divToInsertAfter.parentNode.insertBefore(playAgainButoon, divToInsertAfter.nextSibling);
-        playAgainButoon.addEventListener('click', reset);
+        divToInsertAfter.parentNode.insertBefore(playAgainButon, divToInsertAfter.nextSibling);
+        playAgainButon.addEventListener('click', reset);
     }
     return {
         preparePlayAgainButton
@@ -285,25 +285,82 @@ const getRandomNumber1to9 = () => {
 const computerLogic = (() => {
     const random1to9 = 0;
     const bool = false;
+    let possibleMoves = [];
+    let rate = '';
+    let j = 0;
     const checkForEmptyCells = () => {   
-         if (outer.counter < 5){   
+        if (outer.counter < 5){ 
+            
             do {
             
-                if (gameBoard.gameBoardArr[computerLogic.random1to9] === ''){
+                if (gameBoard.gameBoardArr[computerLogic.random1to9 - 1] === ''){
                 
                 computerLogic.bool = true;
                 
-            } 
-            else {
-                
-                computerLogic.bool = false;
-                
-                computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
-            }  
+                } 
+                else {
+                    
+                    computerLogic.bool = false;
+                    
+                    computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
+                }  
             } while (computerLogic.bool === false);   
          }
     }
-    return {checkForEmptyCells, random1to9};
+    const highAI = () => {
+        j = 0;
+        possibleMoves = [];
+        for (let i = 0; i<9; i++){
+            if (gameBoard.gameBoardArr[i] === ''){
+                possibleMoves[j] = i;
+                
+                j++;
+            }
+        } 
+        for (let i = 0; i < possibleMoves.length-1; i++){
+            
+            gameBoard.gameBoardArr[possibleMoves[i]] = 'o';
+            
+            if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[1] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [2] && !checkForEmptyRows(0)){
+        
+               rate = 'winmonve';
+               
+            }
+        
+            else if (gameBoard.gameBoardArr[3] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [3] === gameBoard.gameBoardArr [5] && !checkForEmptyRows(3)){
+                rate = 'winmonve';
+            }
+        
+            else if (gameBoard.gameBoardArr[6] === gameBoard.gameBoardArr[7] && gameBoard.gameBoardArr [6] === gameBoard.gameBoardArr [8] && !checkForEmptyRows(6)){
+                rate = 'winmonve';
+            }
+            else if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[3] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [6] && !checkForEmptyCollumns(0)){
+                rate = 'winmonve';
+            }
+            else if (gameBoard.gameBoardArr[1] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [1] === gameBoard.gameBoardArr [7] && !checkForEmptyCollumns(1)){
+                rate = 'winmonve';
+            }
+            else if (gameBoard.gameBoardArr[2] === gameBoard.gameBoardArr[5] && gameBoard.gameBoardArr [2] === gameBoard.gameBoardArr [8] && !checkForEmptyCollumns(2)){
+                rate = 'winmonve';
+            }
+            else if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [8] && !checkForEmptyDiagonal1(0)){
+                rate = 'winmonve';
+            }
+            else if (gameBoard.gameBoardArr[2] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [2] === gameBoard.gameBoardArr [6] && !checkForEmptyDiagonal2(2)){
+                rate = 'winmonve';
+            }
+            else {rate = ''}
+            
+            if (rate !== 'winmove')
+            gameBoard.gameBoardArr[possibleMoves[i]] = '';
+
+        }
+        
+        
+        
+
+    }
+    return {checkForEmptyCells, random1to9, highAI, possibleMoves};
 })();
 
 
@@ -352,7 +409,7 @@ const outer = (() => {
         
         const clickedField = event.currentTarget.getAttribute('data');
         
-        if (outer.currentPlayer === 1){
+        if (outer.currentPlayer === 1 && !checkForWinner.gameOverSwitch){
             gameBoard.gameBoardArr[clickedField-1] = getInput().symbol1;
             
             
@@ -363,22 +420,23 @@ const outer = (() => {
         }
         checkForWinner();
         
-        if (!checkForWinner.gameOverSwitch){
+        if (outer.currentPlayer === 2 && !checkForWinner.gameOverSwitch){
         computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
         computerLogic.checkForEmptyCells();
-        gameBoard.gameBoardArr[computerLogic.random1to9] = getInput().symbol1 === 'x' ? 'o' : 'x';
+        gameBoard.gameBoardArr[computerLogic.random1to9 - 1] = getInput().symbol1 === 'x' ? 'o' : 'x';
         renderToPage(gameBoard.gameBoardArr, getBoxes);
         
         outer.currentPlayer = 1;
         
         checkForWinner();
-        
-        
+        console.log(computerLogic.random1to9);
+        document.querySelector(`div[data="${computerLogic.random1to9}"]`).removeEventListener('click', handleEventVsComputer);
          
 
         }
         
         event.currentTarget.removeEventListener('click', handleEventVsComputer);
+        computerLogic.highAI();
     };
 
       
@@ -447,7 +505,7 @@ const displayText = (() => {
         
     }
     const setText = (currentPlayer) => {
-        console.log('alert');
+        
         if(document.getElementById('turn') !== null){
             document.getElementById('turn').innerHTML = `${currentPlayer}, it's your turn.`;
         }
@@ -515,10 +573,12 @@ playButton.addEventListener('click', (event) => {
         const player2 = player('Computer', getInput().symbol1 === 'x' ? 'o' : 'x');
         
         if (outer.counter < 1 && outer.currentPlayer === 2){
-            gameBoard.gameBoardArr[computerLogic.random1to9] = player2.sign;
+            computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
+            gameBoard.gameBoardArr[computerLogic.random1to9 - 1] = player2.sign;
             
             renderToPage(gameBoard.gameBoardArr, getBoxes);
             outer.currentPlayer = 1;
+            
         };
 
         
@@ -557,6 +617,7 @@ playButton.addEventListener('click', (event) => {
         
             
         });
+        document.querySelector(`div[data="${computerLogic.random1to9}"]`).removeEventListener('click', outer.handleEventVsComputer);
 
      
 

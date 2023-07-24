@@ -10,6 +10,8 @@ const getBoxes = (() => {
     return (arr);
 })();
 
+
+
 const getClickFields =(() => {
 
     const fields = document.querySelectorAll(".box");
@@ -127,6 +129,29 @@ const showPlayAgain = (() => {
 const gameOver = (() => {
     
         
+        const removeEventListeners = () => {   
+            for (let i = 0; i < 9; i++){
+               
+                if (gameBoard.gameBoardArr[i] === ''){
+                    
+                    document.querySelector(`div[data="${i+1}"]`).removeEventListener('click', outer.handleEventTwoPlayer);
+                }
+            }
+        }
+
+        const removeEventListeners2 = () => {   
+            for (let i = 0; i < 9; i++){
+               
+                if (gameBoard.gameBoardArr[i] === ''){
+                    
+                    document.querySelector(`div[data="${i+1}"]`).removeEventListener('click', outer.handleEventVsComputer);
+                }
+            }
+        }
+
+
+        
+    
         const setText = (currentSymbol) => {
             const text = document.createElement('p');
             text.setAttribute('class', 'text');
@@ -164,7 +189,7 @@ const gameOver = (() => {
         }
 
         
-    return {setText};
+    return {setText, removeEventListeners, removeEventListeners2};
    
     
 })();
@@ -229,7 +254,9 @@ function checkForEmptyDiagonal2(start)  {
 
 const checkForWinner = () => {
     const gameOverSwitch = false;
-    
+  
+
+
     if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[1] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [2] && !checkForEmptyRows(0)){
         
         gameOver.setText(gameBoard.gameBoardArr[0]);
@@ -271,97 +298,184 @@ const checkForWinner = () => {
         gameOver.setText('Noone');
         checkForWinner.gameOverSwitch = true;
     }
-   
+    
+    
+    
 
     return {gameOverSwitch};
     
 };
 
-const getRandomNumber1to9 = () => {
-    const randomNumber1to9 = Math.floor(Math.random()* (10-1) + 1)
-    return {randomNumber1to9};
-}
 
 const computerLogic = (() => {
-    const random1to9 = 0;
-    const bool = false;
-    let possibleMoves = [];
-    let rate = '';
-    let j = 0;
-    const checkForEmptyCells = () => {   
-        if (outer.counter < 5){ 
-            
-            do {
-            
-                if (gameBoard.gameBoardArr[computerLogic.random1to9 - 1] === ''){
-                
-                computerLogic.bool = true;
-                
-                } 
-                else {
-                    
-                    computerLogic.bool = false;
-                    
-                    computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
-                }  
-            } while (computerLogic.bool === false);   
-         }
-    }
-    const highAI = () => {
-        j = 0;
-        possibleMoves = [];
-        for (let i = 0; i<9; i++){
-            if (gameBoard.gameBoardArr[i] === ''){
-                possibleMoves[j] = i;
-                
-                j++;
-            }
-        } 
-        for (let i = 0; i < possibleMoves.length-1; i++){
-            
-            gameBoard.gameBoardArr[possibleMoves[i]] = 'o';
-            
-            if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[1] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [2] && !checkForEmptyRows(0)){
-        
-               rate = 'winmonve';
-               
-            }
-        
-            else if (gameBoard.gameBoardArr[3] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [3] === gameBoard.gameBoardArr [5] && !checkForEmptyRows(3)){
-                rate = 'winmonve';
-            }
-        
-            else if (gameBoard.gameBoardArr[6] === gameBoard.gameBoardArr[7] && gameBoard.gameBoardArr [6] === gameBoard.gameBoardArr [8] && !checkForEmptyRows(6)){
-                rate = 'winmonve';
-            }
-            else if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[3] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [6] && !checkForEmptyCollumns(0)){
-                rate = 'winmonve';
-            }
-            else if (gameBoard.gameBoardArr[1] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [1] === gameBoard.gameBoardArr [7] && !checkForEmptyCollumns(1)){
-                rate = 'winmonve';
-            }
-            else if (gameBoard.gameBoardArr[2] === gameBoard.gameBoardArr[5] && gameBoard.gameBoardArr [2] === gameBoard.gameBoardArr [8] && !checkForEmptyCollumns(2)){
-                rate = 'winmonve';
-            }
-            else if (gameBoard.gameBoardArr[0] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [0] === gameBoard.gameBoardArr [8] && !checkForEmptyDiagonal1(0)){
-                rate = 'winmonve';
-            }
-            else if (gameBoard.gameBoardArr[2] === gameBoard.gameBoardArr[4] && gameBoard.gameBoardArr [2] === gameBoard.gameBoardArr [6] && !checkForEmptyDiagonal2(2)){
-                rate = 'winmonve';
-            }
-            else {rate = ''}
-            
-            if (rate !== 'winmove')
-            gameBoard.gameBoardArr[possibleMoves[i]] = '';
+    
+   
+    const twoDimensionArray = [['u', 'u', 'u'],
+                               ['u', 'u', 'u'],
+                               ['u', 'u', 'u']];
 
+    const transform = () => {
+        if (document.querySelector('input[name="player1symb"]:checked').value === 'x'){
+        twoDimensionArray[0][0] = gameBoard.gameBoardArr[0] === 'x' ? 2 : gameBoard.gameBoardArr[0] === 'o' ? 0 : 'u';
+        twoDimensionArray[0][1] = gameBoard.gameBoardArr[1] === 'x' ? 2 : gameBoard.gameBoardArr[1] === 'o' ? 0 : 'u';
+        twoDimensionArray[0][2] = gameBoard.gameBoardArr[2] === 'x' ? 2 : gameBoard.gameBoardArr[2] === 'o' ? 0 : 'u';
+        twoDimensionArray[1][0] = gameBoard.gameBoardArr[3] === 'x' ? 2 : gameBoard.gameBoardArr[3] === 'o' ? 0 : 'u';
+        twoDimensionArray[1][1] = gameBoard.gameBoardArr[4] === 'x' ? 2 : gameBoard.gameBoardArr[4] === 'o' ? 0 : 'u';
+        twoDimensionArray[1][2] = gameBoard.gameBoardArr[5] === 'x' ? 2 : gameBoard.gameBoardArr[5] === 'o' ? 0 : 'u';
+        twoDimensionArray[2][0] = gameBoard.gameBoardArr[6] === 'x' ? 2 : gameBoard.gameBoardArr[6] === 'o' ? 0 : 'u';
+        twoDimensionArray[2][1] = gameBoard.gameBoardArr[7] === 'x' ? 2 : gameBoard.gameBoardArr[7] === 'o' ? 0 : 'u';
+        twoDimensionArray[2][2] = gameBoard.gameBoardArr[8] === 'x' ? 2 : gameBoard.gameBoardArr[8] === 'o' ? 0 : 'u';
         }
-        
-        
-        
-
+        else if (document.querySelector('input[name="player1symb"]:checked').value === 'o'){
+            twoDimensionArray[0][0] = gameBoard.gameBoardArr[0] === 'o' ? 2 : gameBoard.gameBoardArr[0] === 'x' ? 0 : 'u';
+            twoDimensionArray[0][1] = gameBoard.gameBoardArr[1] === 'o' ? 2 : gameBoard.gameBoardArr[1] === 'x' ? 0 : 'u';
+            twoDimensionArray[0][2] = gameBoard.gameBoardArr[2] === 'o' ? 2 : gameBoard.gameBoardArr[2] === 'x' ? 0 : 'u';
+            twoDimensionArray[1][0] = gameBoard.gameBoardArr[3] === 'o' ? 2 : gameBoard.gameBoardArr[3] === 'x' ? 0 : 'u';
+            twoDimensionArray[1][1] = gameBoard.gameBoardArr[4] === 'o' ? 2 : gameBoard.gameBoardArr[4] === 'x' ? 0 : 'u';
+            twoDimensionArray[1][2] = gameBoard.gameBoardArr[5] === 'o' ? 2 : gameBoard.gameBoardArr[5] === 'x' ? 0 : 'u';
+            twoDimensionArray[2][0] = gameBoard.gameBoardArr[6] === 'o' ? 2 : gameBoard.gameBoardArr[6] === 'x' ? 0 : 'u';
+            twoDimensionArray[2][1] = gameBoard.gameBoardArr[7] === 'o' ? 2 : gameBoard.gameBoardArr[7] === 'x' ? 0 : 'u';
+            twoDimensionArray[2][2] = gameBoard.gameBoardArr[8] === 'o' ? 2 : gameBoard.gameBoardArr[8] === 'x' ? 0 : 'u';
+            }
+    
     }
-    return {checkForEmptyCells, random1to9, highAI, possibleMoves};
-})();
+    
+    let minX = 0;
+    let minY = 0;
+    let maxX = 0;
+    let maxY = 0;
+    const obj = {a: 2, b: 0};
+    
+    const evaluation = () => {
+        for (const property in obj){
+            for (let i = 0; i < 3; i++){
+                
+                if (twoDimensionArray[i][0] === obj[property] && twoDimensionArray[i][1] === obj[property] && twoDimensionArray[i][2] === obj[property]){
+                    return obj[property];
+                }
+            }
+            for (let i = 0; i < 3; i++){
+                
+                if (twoDimensionArray[0][i] === obj[property] && twoDimensionArray[1][i] === obj[property] && twoDimensionArray[2][i] === obj[property]){
+                    return obj[property];
+                }
+            }
+
+            if (twoDimensionArray[0][0] === obj[property] && twoDimensionArray[1][1] === obj[property] && twoDimensionArray[2][2] === obj[property]){
+                return obj[property];
+            }
+
+
+            if (twoDimensionArray[0][2] === obj[property] && twoDimensionArray[1][1] === obj[property] && twoDimensionArray[2][0] === obj[property]){
+                return obj[property];
+            }
+        }
+        for (let i = 0; i < 3; i++){
+            for (let j = 0; j < 3; j++){
+                if (twoDimensionArray[i][j] === 'u'){
+                    return -1;
+                }        
+            }
+        }
+        return 1;
+    }
+
+    const max = () => {
+        if (computerLogic.evaluation() !== -1){
+            return computerLogic.evaluation();
+        }
+        let maxvalue = -999;
+        let wert = 0;
+        for (let i = 0; i < 3; i++){
+            for (let j = 0; j < 3; j++){
+                if (twoDimensionArray[i][j] === 'u'){
+                    twoDimensionArray[i][j] = 2;
+                    wert = computerLogic.min();
+                    if (wert > maxvalue){
+                        maxvalue = wert;
+                    }
+                    twoDimensionArray[i][j] = 'u';
+                }
+            }
+        }
+        return maxvalue;
+    }
+
+    const min = () => {
+        if (computerLogic.evaluation() !== -1){
+            return computerLogic.evaluation();
+        }
+        let minvalue = 999;
+        let wert = 0;
+        for (let i = 0; i < 3; i++){
+            for (let j = 0; j < 3; j++){
+                if (twoDimensionArray[i][j] === 'u'){
+                    twoDimensionArray[i][j] = 0;
+                    wert = computerLogic.max();
+                    if (wert < minvalue){
+                        minvalue = wert;
+                    }
+                    twoDimensionArray[i][j] = 'u';
+                }
+            }
+        }
+        return minvalue;
+    }
+
+    const maxWo = () => { 
+        if (computerLogic.evaluation() !== -1){
+            return computerLogic.evaluation();
+        }
+        let maxvalue = -999;
+        let wert = 0;
+        for (let i = 0; i < 3; i++){
+            for (let j = 0; j < 3; j++){
+                if (twoDimensionArray[i][j] === 'u'){
+                    twoDimensionArray[i][j] = 2;
+                    wert = computerLogic.minWo();
+                    if (wert > maxvalue){
+                        maxvalue = wert;
+                        computerLogic.maxX = i;
+                        computerLogic.maxY = j;
+                    }
+                    twoDimensionArray[i][j] = 'u';
+
+                }
+            }
+        }
+        return maxvalue;
+    }
+
+    const minWo = () => { 
+        if (computerLogic.evaluation() !== -1){
+            return computerLogic.evaluation();
+        }
+        let minvalue = 999;
+        let wert = 0;
+        for (let i = 0; i < 3; i++){
+            for (let j = 0; j < 3; j++){
+                if (twoDimensionArray[i][j] === 'u'){
+                    twoDimensionArray[i][j] = 0;
+                    wert = computerLogic.max();
+                    if (wert < minvalue){
+                        minvalue = wert;
+                        computerLogic.minX = i;
+                        computerLogic.minY = j;
+                    }
+                    twoDimensionArray[i][j] = 'u';
+
+                }
+            }
+        }
+        return minvalue;
+    }
+    
+    return {transform, evaluation, max, min, minWo, maxWo, minX, minY, maxX, maxY, twoDimensionArray};
+
+    
+}
+    
+)();
 
 
 
@@ -399,49 +513,114 @@ const outer = (() => {
         
         checkForWinner();  
         
+        if (checkForWinner.gameOverSwitch){
+            
+            gameOver.removeEventListeners();   
+        }
+        
     };
     
     const handleEventVsComputer = (event) => {
         outer.counter++;
+        let moveBackTransform = 0;
+        computerLogic.transform();
+        
        
-        
-        
         
         const clickedField = event.currentTarget.getAttribute('data');
         
-        if (outer.currentPlayer === 1 && !checkForWinner.gameOverSwitch){
+        if (outer.currentPlayer === 1 && computerLogic.evaluation() === -1){
             gameBoard.gameBoardArr[clickedField-1] = getInput().symbol1;
-            
+           
             
             renderToPage(gameBoard.gameBoardArr, getBoxes);
             outer.currentPlayer = 2;
             
+            event.currentTarget.removeEventListener('click', outer.handleEventVsComputer);
             
         }
         checkForWinner();
+
+        computerLogic.transform();
         
-        if (outer.currentPlayer === 2 && !checkForWinner.gameOverSwitch){
-        computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
-        computerLogic.checkForEmptyCells();
-        gameBoard.gameBoardArr[computerLogic.random1to9 - 1] = getInput().symbol1 === 'x' ? 'o' : 'x';
+        if (outer.currentPlayer === 2 && computerLogic.evaluation() === -1){
+       
+        computerLogic.minWo();
+        
+       
+        
+        
+        if (computerLogic.minX === 0 && computerLogic.minY === 0){
+            gameBoard.gameBoardArr[0] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 0;
+            
+        }
+        if (computerLogic.minX === 0 && computerLogic.minY === 1){
+            gameBoard.gameBoardArr[1] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 1;
+        }
+        if (computerLogic.minX === 0 && computerLogic.minY === 2){
+            gameBoard.gameBoardArr[2] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 2;
+        }
+        if (computerLogic.minX === 1 && computerLogic.minY === 0){
+            gameBoard.gameBoardArr[3] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 3;
+        }
+        if (computerLogic.minX === 1 && computerLogic.minY === 1){
+            gameBoard.gameBoardArr[4] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 4;
+        }
+        if (computerLogic.minX === 1 && computerLogic.minY === 2){
+            gameBoard.gameBoardArr[5] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 5;
+        }
+        if (computerLogic.minX === 2 && computerLogic.minY === 0){
+            gameBoard.gameBoardArr[6] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 6;
+        }
+        if (computerLogic.minX === 2 && computerLogic.minY === 1){
+            gameBoard.gameBoardArr[7] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 7;
+        }
+        if (computerLogic.minX === 2 && computerLogic.minY === 2){
+            gameBoard.gameBoardArr[8] = getInput().symbol1 === 'x' ? 'o' : 'x';
+            handleEventVsComputer.moveBackTransform = 8;
+        }
+        
+
         renderToPage(gameBoard.gameBoardArr, getBoxes);
         
         outer.currentPlayer = 1;
         
         checkForWinner();
-        console.log(computerLogic.random1to9);
-        document.querySelector(`div[data="${computerLogic.random1to9}"]`).removeEventListener('click', handleEventVsComputer);
-         
 
+        
+        
+        document.querySelector(`div[data="${handleEventVsComputer.moveBackTransform + 1}"]`).removeEventListener('click', outer.handleEventVsComputer);
+         
+        if (checkForWinner.gameOverSwitch){
+            
+            gameOver.removeEventListeners2();   
         }
         
-        event.currentTarget.removeEventListener('click', handleEventVsComputer);
-        computerLogic.highAI();
+        }
+
+        computerLogic.transform();
+        
+        
+        
+        
+        if (checkForWinner.gameOverSwitch){
+            
+            gameOver.removeEventListeners();   
+        }
+        
     };
 
       
     
-        return {handleEventTwoPlayer, handleEventVsComputer, currentPlayer, counter};
+    return {handleEventTwoPlayer, handleEventVsComputer, currentPlayer, counter};
 })();
 
 const switchButtons = (event) => {
@@ -466,6 +645,7 @@ const switchButtons = (event) => {
             document.querySelector('input[id="player1symbo"]').checked = false;
         
         }
+   
     }
 };
 
@@ -524,6 +704,8 @@ playButton.addEventListener('click', (event) => {
     displayText.createPara();
     
     
+    computerLogic.transform();
+    
     if(document.querySelector('input[name="chooseMode"]:checked').value === 'twoPlayer'){
         const player1 = player(getInput().name1, getInput().symbol1);
         const player2 = player(getInput().name2, getInput().symbol2);
@@ -569,15 +751,69 @@ playButton.addEventListener('click', (event) => {
     
     }
     else if (document.querySelector('input[name="chooseMode"]:checked').value === 'vsComputer'){
+        
         const player1 = player(getInput().name1, getInput().symbol1);
         const player2 = player('Computer', getInput().symbol1 === 'x' ? 'o' : 'x');
         
+        getClickFields.fields.forEach((field) => {
+            field.addEventListener('click', outer.handleEventVsComputer);
+            
+        });
+        
+        
+    
+        
+
         if (outer.counter < 1 && outer.currentPlayer === 2){
-            computerLogic.random1to9 = getRandomNumber1to9().randomNumber1to9;
-            gameBoard.gameBoardArr[computerLogic.random1to9 - 1] = player2.sign;
+            computerLogic.transform();
+            computerLogic.minWo();
+            
+            
+            
+            if (computerLogic.minX === 0 && computerLogic.minY === 0){
+                gameBoard.gameBoardArr[0] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 0;
+                
+            }
+            if (computerLogic.minX === 0 && computerLogic.minY === 1){
+                gameBoard.gameBoardArr[1] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 1;
+            }
+            if (computerLogic.minX === 0 && computerLogic.minY === 2){
+                gameBoard.gameBoardArr[2] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 2;
+            }
+            if (computerLogic.minX === 1 && computerLogic.minY === 0){
+                gameBoard.gameBoardArr[3] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 3;
+            }
+            if (computerLogic.minX === 1 && computerLogic.minY === 1){
+                gameBoard.gameBoardArr[4] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 4;
+            }
+            if (computerLogic.minX === 1 && computerLogic.minY === 2){
+                gameBoard.gameBoardArr[5] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 5;
+            }
+            if (computerLogic.minX === 2 && computerLogic.minY === 0){
+                gameBoard.gameBoardArr[6] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 6;
+            }
+            if (computerLogic.minX === 2 && computerLogic.minY === 1){
+                gameBoard.gameBoardArr[7] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 7;
+            }
+            if (computerLogic.minX === 2 && computerLogic.minY === 2){
+                gameBoard.gameBoardArr[8] = player2.sign;
+                outer.handleEventVsComputer.moveBackTransform = 8;
+            }
+            
+            computerLogic.transform();
             
             renderToPage(gameBoard.gameBoardArr, getBoxes);
             outer.currentPlayer = 1;
+            
+            document.querySelector(`div[data="${outer.handleEventVsComputer.moveBackTransform + 1}"]`).removeEventListener('click', outer.handleEventVsComputer);
             
         };
 
@@ -607,18 +843,15 @@ playButton.addEventListener('click', (event) => {
         
         
 
-        getClickFields.fields.forEach((field) => {
-            field.addEventListener('click', outer.handleEventVsComputer);
-            
-        });
+       
         getClickFields.fields.forEach((field) => {
             field.addEventListener('click', checkHandler);
                 
         
             
         });
-        document.querySelector(`div[data="${computerLogic.random1to9}"]`).removeEventListener('click', outer.handleEventVsComputer);
-
+        
+       
      
 
         if (outer.currentPlayer === 1){
